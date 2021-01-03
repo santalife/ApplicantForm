@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Application Form{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+
+<style>
+  .display-4{
+    width:800px;
+    background-color:rgba(123, 239, 178, 1);
+    margin:auto;
+    color:#FFFFFF;
+    padding:10px 0px 10px 0px;
+    text-align:center;
+    border-radius:15px 15px 0px 0px;}
+
+  .main{
+    background-color:rgba(232, 232, 232, 1);
+    width:800px;
+    margin:auto;
+    border-radius:15px 15px 0px 0px;
+    margin-top:20px;
+    margin-bottom:10px;}
+  form{
+    padding:10px;}
+  }
+</style>
+
+
+<div class="main">
+
+  <h1 class="display-4">Applicantion Form</h1>
+
+  <form method="POST" name="applicationForm" action="">
+
+    <div class="form-group" style=width:385px;>
+      {{ render_field(form.fname, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:385px;margin-left:395px;margin-top:-86px; >
+      {{ render_field(form.lname, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:253px;>
+      {{ render_field(form.gender, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:253px;margin-left:263px;margin-top:-86px; >
+      {{ render_field(form.age, class="form-control") }}
+    </div>
+
+    <div class="form-group"style=width:253px;margin-left:526px;margin-top:-86px; >
+
+      {{ render_field(form.nric, class="form-control") }}
+    </div>
+
+    <div class="form-group">
+      {{ render_field(form.address, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:385px;>
+      {{ render_field(form.nationality, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:385px;margin-left:395px;margin-top:-86px;>
+      {{ render_field(form.phoneno, class="form-control") }}
+    </div>
+
+    <div class="form-group">
+      {{ render_field(form.email, class="form-control") }}
+
+    </div>
+
+    <div class="form-group">
+      {{ render_field(form.language, class="form-control") }}
+    </div>
+
+    <div class="form-group">
+      {{ render_field(form.quali, class="form-control") }}
+    </div>
+
+    <div class="form-group">
+      {{ render_field(form.expe, class="form-check", style="list-style-type:none") }}
+    </div>
+
+
+    <p><strong>Past 2 Employment History</strong></p>
+
+    <div class="form-group" style=width:385px;>
+      {{ render_field(form.comp1, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:385px;margin-left:395px;margin-top:-86px;>
+      {{ render_field(form.posi1, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:385px;>
+      {{ render_field(form.comp2, class="form-control") }}
+    </div>
+
+    <div class="form-group" style=width:385px;margin-left:395px;margin-top:-86px;>
+      {{ render_field(form.posi2, class="form-control") }}
+    </div>
+
+
+    <input type="submit" value="Submit" class="btn btn-primary"/>
+  </form>
+</div>
+{% endblock %}
