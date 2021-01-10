@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from applicationForm import CreateApplicationForm
 import shelve, Applicant
 import smtplib
 import datetime
 
 app = Flask(__name__)
+app.secret_key = 'any_random_string'
 
 
 @app.route('/')
@@ -17,14 +18,14 @@ todayscount = 0
 
 @app.route('/createApplicant', methods=['GET', 'POST'])
 def create_applicant():
-    #global todayscount
-    #x = datetime.datetime.now()
-    #currentdate = x.strftime("%d")
-    #datelist = []
-    #if len(datelist) == 0:
-       # datelist.append(currentdate)
-    #else:
-        #pass
+    # global todayscount
+    # x = datetime.datetime.now()
+    # currentdate = x.strftime("%d")
+    # datelist = []
+    # if len(datelist) == 0:
+    # datelist.append(currentdate)
+    # else:
+    # pass
 
     create_applicant_form = CreateApplicationForm(request.form)
 
@@ -52,13 +53,12 @@ def create_applicant():
 
         db['Applicant'] = applicants_dict
 
-        #if currentdate == datelist[0]:
-            #if applicant.get_date() == currentdate:
-               # todayscount += 1
-       # else:
-           # datelist.pop(0)
-            #todayscount = 0
-
+        # if currentdate == datelist[0]:
+        # if applicant.get_date() == currentdate:
+        # todayscount += 1
+        # else:
+        # datelist.pop(0)
+        # todayscount = 0
 
         # Automatically Send Email Codes
         sender_email = "nyppolyclinic@gmail.com"
@@ -77,8 +77,9 @@ def create_applicant():
 
         db.close()
 
-        return redirect(url_for('retrieve_applicants'))
-    return render_template('applicationForm.html',form=create_applicant_form)
+        session['applicant_created'] = applicant.get_first_name() + ' ' + applicant.get_last_name()
+        return redirect(url_for('create_applicant'))
+    return render_template('applicationForm.html', form=create_applicant_form)
 
 
 @app.route('/retrieveApplicants')
@@ -94,7 +95,7 @@ def retrieve_applicants():
         applicants = applicants_dict.get(key)
         applicants_list.append(applicants)
 
-    return render_template('retrieveApplicants.html', todaycount=todayscount ,count=len(applicants_list),
+    return render_template('retrieveApplicants.html', count=len(applicants_list),
                            applicants_list=applicants_list)
 
 
@@ -144,7 +145,9 @@ def update_applicants(id):
 
         db.close()
 
-        return redirect(url_for('retrieve_applicants'))
+        session['applicant_updated'] = applicant.get_first_name() + ' ' + applicant.get_last_name()
+
+        return redirect(url_for('home'))
 
     else:
         applicants_dict = {}
@@ -180,12 +183,17 @@ def delete_applicant(id):
     db = shelve.open('storage.db', 'w')
     applicants_dict = db['Applicant']
 
-    applicants_dict.pop(id)
+    applicant = applicants_dict.pop(id)
 
     db['Applicant'] = applicants_dict
     db.close()
-
+    session['applicant_deleted'] = applicant.get_first_name() + ' ' + applicant.get_last_name()
     return redirect(url_for('retrieve_applicants'))
+
+
+@app.errorhandler(404)
+def page_not_handle(e):
+    return render_template("error404.html"), 404
 
 
 if __name__ == '__main__':

@@ -2,6 +2,23 @@
 {% block title %}Library Loan System - Retrieve Applicants{% endblock %}
 
 {% block content %}
+{% if 'applicant_created' in session %}
+<div class="alert alert-success alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{ session.pop('applicant_created', None) }} was created.
+</div>
+{% elif 'applicant_updated' in session %}
+<div class="alert alert-warning alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{ session.pop('applicant_updated', None) }} was updated.
+</div>
+{% elif 'applicant_deleted' in session %}
+<div class="alert alert-danger alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{ session.pop('applicant_deleted', None) }} was deleted.
+</div>
+{% endif %}
+
 <h1 class="display-4">Retrieve Applicants</h1>
 <div>
   {% if count == 0 %}
@@ -12,6 +29,7 @@
   <p>There are {{ count }} applicants.</p>
   {% endif %}
 </div>
+
 
 <div>
   <table class="table table-striped">
@@ -61,7 +79,37 @@
         <td><a href="/updateApplicants/{{applicants.get_applicantid()}}" class="btn btn-warning">Update</a></td>
         <td>
         <form action="{{url_for('delete_applicant', id=applicants.get_applicantid())}}" method="POST">
-          <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{applicants.get_first_name(),applicants.get_last_name()}} ?');">
+          <!--            <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
+            <!-- Button to Open the Modal -->
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal_{{applicants.get_applicantid()}}">
+              Delete
+            </button>
+
+            <!-- The Modal -->
+            <div class="modal" id="myModal_{{applicants.get_applicantid()}}">
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Delete Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Are you sure you want to delete {{applicants.get_first_name()}} {{applicants.get_last_name()}}?
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <input type="submit" value="Delete" class="btn btn-danger">
+                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </form>
         </td>
       </tr>
